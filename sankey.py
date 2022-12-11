@@ -4,29 +4,58 @@ import urllib.request
 import pandas as pd
 from collections import Counter
 from pandas.core.frame import DataFrame
+import re
 
 
-data = pd.read_csv("/Users/wangruoqi/Desktop/cov/conditions.csv")
+data = pd.read_csv("/Users/wangruoqi/Desktop/cov/covid19-kg-vis/data/conditions.csv")
+data2 = pd.read_csv("/Users/wangruoqi/Desktop/cov/covid19-kg-vis/data/patients1.csv")
 
 data.sort_values(by=["PATIENT", "STOP"], inplace=True, ascending=[True,True])
 
-data_new = data.groupby(['PATIENT'])['DESCRIPTION'].apply(list).to_frame()
+data_new = data.groupby(['ENCOUNTER'])['DESCRIPTION'].apply(list).to_frame()
 for index, row in data_new.iterrows():
     if row['DESCRIPTION'][0] != 'Suspected COVID-19':
         data_new = data_new.drop(index=index)
+data_new.to_csv('/Users/wangruoqi/Desktop/cov/covid19-kg-vis/data/enc_samples.csv')
+data_new.to_csv('/Users/wangruoqi/Desktop/cov/covid19-kg-vis/data/samples.csv')
+data_new = pd.read_csv("/Users/wangruoqi/Desktop/cov/covid19-kg-vis/data/samples.csv")
+print(data_new)
+print(data2)
+# data_new['PATIENT']=data_new['PATIENT'].astype(str)
+# data2['PATIENT']=data2['PATIENT'].astype(str)
+# print(data_new['PATIENT'].dtype)
+# print(data2['PATIENT'].dtype)
+# data_new = data_new.merge(data2, on = 'PATIENT')
+# print(data_new)
+
+
+
 
 
 res = []
 for index, row in data_new.iterrows():
-    for i in range(len(row['DESCRIPTION'])-1):
-        # res.append((row['DESCRIPTION'][i], row['DESCRIPTION'][i+1]))
-        des = row['DESCRIPTION'][i] + "_" +str(i)
-        des1 = row['DESCRIPTION'][i+1] + "_" +str(i+1)
+    des_list = row['DESCRIPTION'][1:-1].split(', ')
+    # birth = int(row['BIRTHDATE'][0:4])
+    # agebound = 60
+    # if 2020 - birth > agebound:
+    #     group = 'old'
+    # else:
+    #     group = 'young'
+    # print(group)
+    # print(des_list)
+    if len(des_list) == 1:
+        des = des_list[0][1:-1] + "_" + str(0)# + "_" + str(group)
+        res.append((des, 'OK'))# + "_" + str(group)))
+    for i in range(len(des_list)-1):
+        # res.append((des_list[i], des_list[i+1]))
+        des = des_list[i][1:-1] + "_" + str(i)# + "_" + str(group)
+        des1 = des_list[i+1][1:-1] + "_" + str(i+1)# + "_" + str(group)
         res.append((des, des1))
+        # print(des, des1)
 
 
 count = Counter(res)
-print(count)
+# print(count)
 
 source_label = []
 target_label = []
@@ -50,7 +79,7 @@ data_sankey["target"] = data_sankey["target_label"].map(index)
 source = data_sankey["source"].tolist()
 target = data_sankey["target"].tolist()
 
-print(labels)
+# print(labels)
 
 # color_link = [
 # '#D7BDE2', '#FAD7A0', '#AED6F1', '#CBB4D5', '#EBBAB5', 
@@ -88,8 +117,8 @@ color_link = [
 
 
 # data to dict, dict to sankey
-link = dict(source = source, target = target, value = value, color=color_link)
-node = dict(label = labels, pad=50, thickness=5)
+link = dict(source = source, target = target, value = value)#, color=color_link)
+node = dict(label = labels, pad=5, thickness=10)
 data = go.Sankey(link = link, node=node)
 # plot
 fig = go.Figure(data)

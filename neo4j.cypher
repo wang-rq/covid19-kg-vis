@@ -1,4 +1,4 @@
-LOAD CSV WITH HEADERS FROM 'file:///data/test.csv' AS row FIELDTERMINATOR ','
+LOAD CSV WITH HEADERS FROM 'file:///data/encounters_clean.csv' AS row FIELDTERMINATOR ','
     MERGE (e:Encounter {id:row.Id})
           SET e.code=row.CODE,
             e.description=row.DESCRIPTION,
@@ -90,7 +90,7 @@ LOAD CSV WITH HEADERS FROM 'file:///data/allergies.csv' AS row FIELDTERMINATOR '
         MERGE (as)-[:HAS_END]->(ae)
 
 
-LOAD CSV WITH HEADERS FROM 'file:///data/cond_test.csv' AS row FIELDTERMINATOR ','
+LOAD CSV WITH HEADERS FROM 'file:///data/conditions_clean.csv' AS row FIELDTERMINATOR ','
         MATCH (p:Patient {id:row.PATIENT})
         MERGE (c:Condition {code:row.CODE})
         SET c.description=row.DESCRIPTION
@@ -110,7 +110,7 @@ LOAD CSV WITH HEADERS FROM 'file:///data/cond_test.csv' AS row FIELDTERMINATOR '
         MERGE (cs)-[:HAS_END]->(ce)
 
 
-LOAD CSV WITH HEADERS FROM 'file:///data/med_test.csv' AS row FIELDTERMINATOR ','
+LOAD CSV WITH HEADERS FROM 'file:///data/medications_clean.csv' AS row FIELDTERMINATOR ','
         MERGE (p:Patient {id:row.PATIENT})
         MERGE (d:Drug {code:row.CODE})
         SET d.description=row.DESCRIPTION
@@ -130,7 +130,7 @@ LOAD CSV WITH HEADERS FROM 'file:///data/med_test.csv' AS row FIELDTERMINATOR ',
         MERGE (ps)-[:HAS_END]->(pe)
 
 
-LOAD CSV WITH HEADERS FROM 'file:///data/proc_test.csv' AS row FIELDTERMINATOR ','
+LOAD CSV WITH HEADERS FROM 'file:///data/procedures_clean.csv' AS row FIELDTERMINATOR ','
         MERGE (p:Patient {id:row.PATIENT})
         MERGE (r:Procedure {code:row.CODE})
         SET r.description=row.DESCRIPTION
@@ -142,7 +142,7 @@ LOAD CSV WITH HEADERS FROM 'file:///data/proc_test.csv' AS row FIELDTERMINATOR '
         MERGE (p)-[:HAS_ENCOUNTER]->(pe)
         MERGE (pe)-[:HAS_PROCEDURE]->(r)
 
-LOAD CSV WITH HEADERS FROM 'file:///data/care_test.csv' AS row FIELDTERMINATOR ','
+LOAD CSV WITH HEADERS FROM 'file:///data/careplans_clean.csv' AS row FIELDTERMINATOR ','
         MATCH (p:Patient {id:row.PATIENT})
         MERGE (c:CarePlan {code:row.CODE})
         SET c.description=row.DESCRIPTION
@@ -167,3 +167,17 @@ LOAD CSV WITH HEADERS FROM 'file:///data/organizations.csv' AS row FIELDTERMINAT
         MERGE (a:Address {address: row.ADDRESS})
           SET a.location = point({latitude:toFloat(row.LAT), longitude:toFloat(row.LON)})
         MERGE (o)-[:HAS_ADDRESS]->(a)
+
+MATCH (p)-[:HAS_ENCOUNTER]->(e)
+    WITH e
+    ORDER BY e.date
+    WITH collect(e) AS encounters
+    WITH encounters, encounters[1..] as nextEncounters
+    UNWIND range(0,size(nextEncounters)-1,1) as index
+    WITH encounters[index] as first, nextEncounters[index] as second
+    CREATE (first)-[:NEXT]->(second)
+
+
+MATCH (c)<-[:HAS_CONDITION]-(:Encounter)<-[:HAS_ENCOUNTER]-(p:Patient)
+      WITH c,count(p) AS NUM
+      SET c.num=NUM
