@@ -5,22 +5,24 @@ import pandas as pd
 from collections import Counter
 from pandas.core.frame import DataFrame
 import re
+import plotly
 
 
-data = pd.read_csv("/Users/wangruoqi/Desktop/cov/covid19-kg-vis/data/conditions.csv")
-data2 = pd.read_csv("/Users/wangruoqi/Desktop/cov/covid19-kg-vis/data/patients1.csv")
+# data = pd.read_csv("/Users/wangruoqi/Desktop/cov/covid19-kg-vis/data/conditions.csv")
+# # data2 = pd.read_csv("/Users/wangruoqi/Desktop/cov/covid19-kg-vis/data/patients1.csv")
 
-data.sort_values(by=["PATIENT", "STOP"], inplace=True, ascending=[True,True])
+# data.sort_values(by=["PATIENT", "STOP"], inplace=True, ascending=[True,True])
 
-data_new = data.groupby(['ENCOUNTER'])['DESCRIPTION'].apply(list).to_frame()
-for index, row in data_new.iterrows():
-    if row['DESCRIPTION'][0] != 'Suspected COVID-19':
-        data_new = data_new.drop(index=index)
-data_new.to_csv('/Users/wangruoqi/Desktop/cov/covid19-kg-vis/data/enc_samples.csv')
-data_new.to_csv('/Users/wangruoqi/Desktop/cov/covid19-kg-vis/data/samples.csv')
+# data_new = data.groupby(['ENCOUNTER'])['DESCRIPTION'].apply(list).to_frame()
+# for index, row in data_new.iterrows():
+#     if row['DESCRIPTION'][0] != 'Suspected COVID-19':
+#         data_new = data_new.drop(index=index)
+# # data_new.to_csv('/Users/wangruoqi/Desktop/cov/covid19-kg-vis/data/enc_samples.csv')
+# data_new.to_csv('/Users/wangruoqi/Desktop/cov/covid19-kg-vis/data/samples.csv')
+
 data_new = pd.read_csv("/Users/wangruoqi/Desktop/cov/covid19-kg-vis/data/samples.csv")
 print(data_new)
-print(data2)
+# print(data2)
 # data_new['PATIENT']=data_new['PATIENT'].astype(str)
 # data2['PATIENT']=data2['PATIENT'].astype(str)
 # print(data_new['PATIENT'].dtype)
@@ -123,3 +125,4 @@ data = go.Sankey(link = link, node=node)
 # plot
 fig = go.Figure(data)
 fig.show()
+# plotly.io.to_json(fig)
