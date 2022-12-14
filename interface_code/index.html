@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+    <title>Covid-19 visualization</title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+        content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+
+    <style>
+        body {
+            height: 100vh;
+            width: 100%;
+            margin: 0px;
+            background-color: #333333;
+        }
+
+        .framework {
+            border: 1px solid black;
+
+            border-color: rgb(237, 237, 238);
+            -webkit-box-shadow: 0px 3px 3px 2px #bdbaba;
+            -moz-box-shadow: 0px 3px 3px 2px #bdbaba;
+            box-shadow: 0px 3px 3px 2px #bdbaba;
+            height: calc(50% - 20px);
+            width: calc(50% - 30px);
+            /* margin-top: 10px; */
+            /* margin-left: 30px; */
+        }
+
+        .framework .frameworkTitle {
+            background-color: #000000;
+            height: 40px;
+            width: 100%;
+        }
+
+        .framework .frameworkBody {
+            background-color: #000000;
+            height: calc(100% - 40px);
+            /* width: 100%; */
+            /* background-color: #4C87EC; */
+            padding: 0px 0px 0px 0px;
+        }
+
+        .framework .frameworkTitle .title {
+            position: absolute;
+            border-radius: 5px;
+            /* background-color: #CCFFCC; */
+            /* margin-top: 7px; */
+            /* margin-left: 10px; */
+            left: 40%;
+            height: 35px;
+
+            font-weight: bold;
+            font-size: 20px;
+            color: #CCFFCC;
+            padding-left: 10px;
+            padding-right: 10px;
+            font-family: STHeiti;
+            line-height: 35px;
+        }
+
+        .slidecontainer {
+            width: 100%;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 25px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+        }
+
+        .slider:hover {
+            opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            background: #04AA6D;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            background: #04AA6D;
+            cursor: pointer;
+        }
+
+        .container {
+          display: inline-block;
+          height:100%;
+          width: 100%;
+          overflow: hidden;
+        }
+        .inner{
+          overflow-x: scroll;
+          overflow-y: hidden;
+          white-space: nowrap;
+          height: 100%;
+        }
+
+        ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+        background: #d3d3d3;
+        border-radius: 8px;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+        background: #A9A9A9;
+        border-radius: 8px;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+         background: #949494;
+        }
+
+        .el-menu::-webkit-scrollbar,
+        .el-table__body-wrapper::-webkit-scrollbar {
+        display: none;
+        }
+
+        .el-menu:hover::-webkit-scrollbar,
+        .el-table__body-wrapper:hover::-webkit-scrollbar {
+        display: block;
+        }
+        /* 该部分代码为自动播放 */
+        /* img{
+          height:100%;
+          position: absolute;
+          animation-iteration-count: infinite;
+          animation-timing-function: linear;
+          animation-duration: 7s;
+        }
+        .c1{
+          animation-name: roll1;
+        }
+        .c2{
+          animation-name: roll2;
+        }
+        @keyframes roll1{
+          0%{left:0px; top: 0px;}
+          100%{left:100%;top:0px;}
+        }
+        @keyframes roll2{
+          0%{left:-100%; top: 0px;}
+          100%{left:50%;top:0px;}
+        } */
+    </style>
+
+</head>
+
+<body>
+    <div id="app" style="height: 100%; width: 100%">
+        <div class="framework" style="position: absolute; top: 20px; left: 30px; height: 36%">
+            <div class="frameworkTitle">
+                <div class="title">
+                    Sample View
+                </div>
+            </div>
+            <div id="gif" class="frameworkBody">
+                <!-- <img id="iframsvg" src="sample_use1.gif" height="85%"  style="position: absolute; left: 30px;"></iframe>
+                <img id="iframsvg" src="video2.gif" height="85%"  style="position: absolute; left: calc(50% + 15px)"></iframe> -->
+                <div id="gif" class="container">
+                  <div id="roll" class="inner" >
+                    <img src="sample_use1.gif" height="100%">
+                    <img src="video3.gif" height="100%">
+                    <img src="video2.gif" height="100%">
+                  </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="framework" style="position: absolute; top: calc(35% + 50px); left: 30px; height: 59%">
+            <div class="frameworkTitle">
+                <div class="title">
+                    Sankey View
+                </div>
+            </div>
+            <div id = "Sankey" class="frameworkBody">
+                <script type="text/javascript" src = "s1.js"></script>
+                <div
+        id="4fa37ea9-d630-420f-aebc-0f5411eb6ecf"
+        class="plotly-graph-div"
+        style="height: 100%; width: 100%"
+      ></div>
+      <script type="text/javascript">
+        window.PLOTLYENV = window.PLOTLYENV || {};
+        if (document.getElementById("4fa37ea9-d630-420f-aebc-0f5411eb6ecf")) {
+          Plotly.newPlot(
+            "4fa37ea9-d630-420f-aebc-0f5411eb6ecf",
+            [
+              {
+                link: {
+                  source: [
+                    27, 22, 22, 24, 70, 27, 34, 27, 4, 5, 34, 68, 34, 72, 4, 56,
+                    29, 61, 22, 5, 27, 34, 13, 4, 31, 27, 27, 34, 69, 22, 4, 22,
+                    53, 8, 4, 24, 22, 28, 30, 4, 51, 11, 49, 52, 31, 5, 36, 72,
+                    13, 1, 27, 57, 27, 23, 31, 71, 23, 28, 22, 41, 34, 56, 12,
+                    27, 34, 22, 5, 22, 62, 8, 1, 13, 70, 31, 22, 56, 68, 5, 6,
+                    31, 34, 62, 22, 46, 30, 34, 18, 66, 72, 5, 18, 34, 17, 64,
+                    0, 48, 27, 54, 18, 52, 4, 22, 17, 22, 5, 30, 62, 51, 13, 51,
+                    12, 56, 22, 72, 4, 46, 6, 34, 31, 30, 49, 68, 29, 58, 51,
+                    40, 54, 29, 46, 31, 42, 34, 70, 34, 51, 5, 11, 2, 40, 5, 9,
+                    49, 46, 4, 21, 1, 27, 56, 11, 40, 22, 73, 28, 4, 27, 27, 67,
+                    31, 34, 4, 41, 8, 28, 29, 32, 13, 18, 63, 5, 65, 17, 19, 68,
+                    11, 70, 27, 20, 70, 27, 39, 4, 27, 33, 31, 12, 51, 6, 57,
+                    46, 72, 68, 31, 5, 4, 71, 7, 34, 59, 30, 40,
+                  ],
+                  target: [
+                    22, 51, 24, 70, 32, 34, 51, 4, 5, 29, 68, 8, 72, 70, 56, 29,
+                    61, 50, 5, 42, 37, 13, 70, 31, 70, 6, 44, 69, 8, 13, 72, 53,
+                    8, 58, 24, 11, 28, 30, 58, 13, 11, 49, 52, 45, 8, 36, 0, 18,
+                    1, 61, 57, 62, 23, 31, 71, 58, 28, 70, 41, 70, 5, 12, 61,
+                    40, 41, 59, 1, 62, 8, 15, 58, 29, 2, 18, 56, 8, 70, 71, 41,
+                    29, 62, 36, 46, 30, 2, 46, 66, 52, 64, 8, 58, 17, 64, 0, 48,
+                    55, 54, 13, 49, 25, 68, 68, 71, 17, 30, 61, 70, 70, 30, 12,
+                    19, 70, 72, 30, 46, 70, 72, 31, 30, 49, 38, 29, 58, 60, 30,
+                    51, 41, 15, 11, 42, 58, 56, 15, 10, 1, 11, 2, 50, 46, 9, 49,
+                    43, 29, 21, 65, 32, 26, 11, 14, 41, 73, 29, 71, 17, 35, 67,
+                    5, 47, 28, 41, 8, 7, 29, 19, 52, 18, 63, 16, 65, 61, 12, 48,
+                    11, 58, 7, 20, 5, 49, 39, 31, 28, 33, 31, 12, 3, 29, 31, 46,
+                    8, 8, 1, 9, 64, 62, 7, 52, 59, 30, 66, 31,
+                  ],
+                  value: [
+                    126, 19, 1, 1, 3, 114, 13, 128, 30, 11, 4, 2, 12, 13, 5, 1,
+                    1, 3, 18, 1, 11, 5, 6, 24, 1, 7, 4, 1, 1, 5, 6, 1, 1, 1, 6,
+                    2, 3, 4, 2, 10, 1, 1, 2, 1, 7, 2, 2, 1, 3, 1, 2, 1, 4, 1, 1,
+                    1, 1, 1, 3, 2, 19, 2, 1, 9, 1, 1, 4, 6, 4, 1, 2, 4, 1, 5, 2,
+                    3, 2, 1, 2, 2, 3, 2, 2, 1, 3, 4, 1, 1, 1, 3, 1, 4, 1, 1, 1,
+                    1, 4, 1, 1, 2, 3, 2, 6, 3, 3, 1, 2, 5, 2, 1, 2, 3, 4, 1, 2,
+                    3, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 5, 2, 1, 2,
+                    3, 1, 1, 1, 3, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1,
+                    1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                    2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1,
+                    1, 1, 1, 1, 1,
+                  ],
+                },
+                node: {
+                  label: [
+                    "Muscle pain (finding)_4",
+                    "Sore throat symptom (finding)_3",
+                    "Fatigue (finding)_4",
+                    "Loss of taste (finding)_4",
+                    "COVID-19_1",
+                    "Cough (finding)_2",
+                    "Cough (finding)_1",
+                    "Sputum finding (finding)_4",
+                    "Fatigue (finding)_3",
+                    "Nasal congestion (finding)_3",
+                    "Nasal congestion (finding)_2",
+                    "Fever (finding)_3",
+                    "Wheezing (finding)_3",
+                    "Fatigue (finding)_2",
+                    "Chill (finding)_4",
+                    "COVID-19_4",
+                    "Diarrhea symptom (finding)_5",
+                    "Joint pain (finding)_2",
+                    "Chill (finding)_3",
+                    "Dyspnea (finding)_4",
+                    "Vomiting symptom (finding)_1",
+                    "Vomiting symptom (finding)_2",
+                    "Fever (finding)_1",
+                    "Chill (finding)_1",
+                    "Loss of taste (finding)_2",
+                    "Cough (finding)_6",
+                    "Diarrhea symptom (finding)_1",
+                    "Suspected COVID-19_0",
+                    "Wheezing (finding)_2",
+                    "Sputum finding (finding)_3",
+                    "Dyspnea (finding)_3",
+                    "Fever (finding)_2",
+                    "Headache (finding)_4",
+                    "Dyspnea (finding)_1",
+                    "Loss of taste (finding)_1",
+                    "Nausea (finding)_1",
+                    "Joint pain (finding)_3",
+                    "Asymptomatic",
+                    "Headache (finding)_5",
+                    "Wheezing (finding)_1",
+                    "Fatigue (finding)_1",
+                    "Headache (finding)_2",
+                    "Headache (finding)_3",
+                    "Dyspnea (finding)_5",
+                    "Sore throat symptom (finding)_1",
+                    "Sputum finding (finding)_6",
+                    "Sore throat symptom (finding)_2",
+                    "Loss of taste (finding)_3",
+                    "Cough (finding)_5",
+                    "Wheezing (finding)_4",
+                    "Loss of taste (finding)_5",
+                    "COVID-19_2",
+                    "Fatigue (finding)_5",
+                    "Nausea (finding)_2",
+                    "Sputum finding (finding)_1",
+                    "COVID-19_6",
+                    "Dyspnea (finding)_2",
+                    "Joint pain (finding)_1",
+                    "Cough (finding)_4",
+                    "Passive conjunctival congestion (finding)_2",
+                    "Nasal congestion (finding)_5",
+                    "Fever (finding)_4",
+                    "Muscle pain (finding)_2",
+                    "Joint pain (finding)_4",
+                    "Diarrhea symptom (finding)_3",
+                    "Nausea (finding)_3",
+                    "Sore throat symptom (finding)_4",
+                    "Nasal congestion (finding)_1",
+                    "Chill (finding)_2",
+                    "Diarrhea symptom (finding)_2",
+                    "Cough (finding)_3",
+                    "Muscle pain (finding)_3",
+                    "Sputum finding (finding)_2",
+                    "Hemoptysis (finding)_2",
+                  ],
+                  pad: 10,
+                  thickness: 15,
+                },
+                type: "sankey",
+              },
+            ],
+            {
+              template: {
+                data: {
+                  histogram2dcontour: [
+                    {
+                      type: "histogram2dcontour",
+                      colorbar: { outlinewidth: 0, ticks: "" },
+                      colorscale: [
+                        [0.0, "#0d0887"],
+                        [0.1111111111111111, "#46039f"],
+                        [0.2222222222222222, "#7201a8"],
+                        [0.3333333333333333, "#9c179e"],
+                        [0.4444444444444444, "#bd3786"],
+                        [0.5555555555555556, "#d8576b"],
+                        [0.6666666666666666, "#ed7953"],
+                        [0.7777777777777778, "#fb9f3a"],
+                        [0.8888888888888888, "#fdca26"],
+                        [1.0, "#f0f921"],
+                      ],
+                    },
+                  ],
+                  choropleth: [
+                    {
+                      type: "choropleth",
+                      colorbar: { outlinewidth: 0, ticks: "" },
+                    },
+                  ],
+                  histogram2d: [
+                    {
+                      type: "histogram2d",
+                      colorbar: { outlinewidth: 0, ticks: "" },
+                      colorscale: [
+                        [0.0, "#0d0887"],
+                        [0.1111111111111111, "#46039f"],
+                        [0.2222222222222222, "#7201a8"],
+                        [0.3333333333333333, "#9c179e"],
+                        [0.4444444444444444, "#bd3786"],
+                        [0.5555555555555556, "#d8576b"],
+                        [0.6666666666666666, "#ed7953"],
+                        [0.7777777777777778, "#fb9f3a"],
+                        [0.8888888888888888, "#fdca26"],
+                        [1.0, "#f0f921"],
+                      ],
+                    },
+                  ],
+                  heatmap: [
+                    {
+                      type: "heatmap",
+                      colorbar: { outlinewidth: 0, ticks: "" },
+                      colorscale: [
+                        [0.0, "#0d0887"],
+                        [0.1111111111111111, "#46039f"],
+                        [0.2222222222222222, "#7201a8"],
+                        [0.3333333333333333, "#9c179e"],
+                        [0.4444444444444444, "#bd3786"],
+                        [0.5555555555555556, "#d8576b"],
+                        [0.6666666666666666, "#ed7953"],
+                        [0.7777777777777778, "#fb9f3a"],
+                        [0.8888888888888888, "#fdca26"],
+                        [1.0, "#f0f921"],
+                      ],
+                    },
+                  ],
+                  heatmapgl: [
+                    {
+                      type: "heatmapgl",
+                      colorbar: { outlinewidth: 0, ticks: "" },
+                      colorscale: [
+                        [0.0, "#0d0887"],
+                        [0.1111111111111111, "#46039f"],
+                        [0.2222222222222222, "#7201a8"],
+                        [0.3333333333333333, "#9c179e"],
+                        [0.4444444444444444, "#bd3786"],
+                        [0.5555555555555556, "#d8576b"],
+                        [0.6666666666666666, "#ed7953"],
+                        [0.7777777777777778, "#fb9f3a"],
+                        [0.8888888888888888, "#fdca26"],
+                        [1.0, "#f0f921"],
+                      ],
+                    },
+                  ],
+                  contourcarpet: [
+                    {
+                      type: "contourcarpet",
+                      colorbar: { outlinewidth: 0, ticks: "" },
+                    },
+                  ],
+                  contour: [
+                    {
+                      type: "contour",
+                      colorbar: { outlinewidth: 0, ticks: "" },
+                      colorscale: [
+                        [0.0, "#0d0887"],
+                        [0.1111111111111111, "#46039f"],
+                        [0.2222222222222222, "#7201a8"],
+                        [0.3333333333333333, "#9c179e"],
+                        [0.4444444444444444, "#bd3786"],
+                        [0.5555555555555556, "#d8576b"],
+                        [0.6666666666666666, "#ed7953"],
+                        [0.7777777777777778, "#fb9f3a"],
+                        [0.8888888888888888, "#fdca26"],
+                        [1.0, "#f0f921"],
+                      ],
+                    },
+                  ],
+                  surface: [
+                    {
+                      type: "surface",
+                      colorbar: { outlinewidth: 0, ticks: "" },
+                      colorscale: [
+                        [0.0, "#0d0887"],
+                        [0.1111111111111111, "#46039f"],
+                        [0.2222222222222222, "#7201a8"],
+                        [0.3333333333333333, "#9c179e"],
+                        [0.4444444444444444, "#bd3786"],
+                        [0.5555555555555556, "#d8576b"],
+                        [0.6666666666666666, "#ed7953"],
+                        [0.7777777777777778, "#fb9f3a"],
+                        [0.8888888888888888, "#fdca26"],
+                        [1.0, "#f0f921"],
+                      ],
+                    },
+                  ],
+                  mesh3d: [
+                    {
+                      type: "mesh3d",
+                      colorbar: { outlinewidth: 0, ticks: "" },
+                    },
+                  ],
+                  scatter: [
+                    {
+                      fillpattern: {
+                        fillmode: "overlay",
+                        size: 10,
+                        solidity: 0.2,
+                      },
+                      type: "scatter",
+                    },
+                  ],
+                  parcoords: [
+                    {
+                      type: "parcoords",
+                      line: { colorbar: { outlinewidth: 0, ticks: "" } },
+                    },
+                  ],
+                  scatterpolargl: [
+                    {
+                      type: "scatterpolargl",
+                      marker: { colorbar: { outlinewidth: 0, ticks: "" } },
+                    },
+                  ],
+                  bar: [
+                    {
+                      error_x: { color: "#2a3f5f" },
+                      error_y: { color: "#2a3f5f" },
+                      marker: {
+                        line: { color: "#E5ECF6", width: 0.5 },
+                        pattern: {
+                          fillmode: "overlay",
+                          size: 10,
+                          solidity: 0.2,
+                        },
+                      },
+                      type: "bar",
+                    },
+                  ],
+                  scattergeo: [
+                    {
+                      type: "scattergeo",
+                      marker: { colorbar: { outlinewidth: 0, ticks: "" } },
+                    },
+                  ],
+                  scatterpolar: [
+                    {
+                      type: "scatterpolar",
+                      marker: { colorbar: { outlinewidth: 0, ticks: "" } },
+                    },
+                  ],
+                  histogram: [
+                    {
+                      marker: {
+                        pattern: {
+                          fillmode: "overlay",
+                          size: 10,
+                          solidity: 0.2,
+                        },
+                      },
+                      type: "histogram",
+                    },
+                  ],
+                  scattergl: [
+                    {
+                      type: "scattergl",
+                      marker: { colorbar: { outlinewidth: 0, ticks: "" } },
+                    },
+                  ],
+                  scatter3d: [
+                    {
+                      type: "scatter3d",
+                      line: { colorbar: { outlinewidth: 0, ticks: "" } },
+                      marker: { colorbar: { outlinewidth: 0, ticks: "" } },
+                    },
+                  ],
+                  scattermapbox: [
+                    {
+                      type: "scattermapbox",
+                      marker: { colorbar: { outlinewidth: 0, ticks: "" } },
+                    },
+                  ],
+                  scatterternary: [
+                    {
+                      type: "scatterternary",
+                      marker: { colorbar: { outlinewidth: 0, ticks: "" } },
+                    },
+                  ],
+                  scattercarpet: [
+                    {
+                      type: "scattercarpet",
+                      marker: { colorbar: { outlinewidth: 0, ticks: "" } },
+                    },
+                  ],
+                  carpet: [
+                    {
+                      aaxis: {
+                        endlinecolor: "#2a3f5f",
+                        gridcolor: "white",
+                        linecolor: "white",
+                        minorgridcolor: "white",
+                        startlinecolor: "#2a3f5f",
+                      },
+                      baxis: {
+                        endlinecolor: "#2a3f5f",
+                        gridcolor: "white",
+                        linecolor: "white",
+                        minorgridcolor: "white",
+                        startlinecolor: "#2a3f5f",
+                      },
+                      type: "carpet",
+                    },
+                  ],
+                  table: [
+                    {
+                      cells: {
+                        fill: { color: "#EBF0F8" },
+                        line: { color: "white" },
+                      },
+                      header: {
+                        fill: { color: "#C8D4E3" },
+                        line: { color: "white" },
+                      },
+                      type: "table",
+                    },
+                  ],
+                  barpolar: [
+                    {
+                      marker: {
+                        line: { color: "#E5ECF6", width: 0.5 },
+                        pattern: {
+                          fillmode: "overlay",
+                          size: 10,
+                          solidity: 0.2,
+                        },
+                      },
+                      type: "barpolar",
+                    },
+                  ],
+                  pie: [{ automargin: true, type: "pie" }],
+                },
+                layout: {
+                  autotypenumbers: "strict",
+                  colorway: [
+                    "#636efa",
+                    "#EF553B",
+                    "#00cc96",
+                    "#ab63fa",
+                    "#FF4F58",
+                    "#19d3f3",
+                    "#FF6692",
+                    "#69E147",
+                    "#FF3EA5",
+                    "#EDFA00",
+                  ],
+                  font: { color: "#2a3f5f" },
+                  hovermode: "closest",
+                  hoverlabel: { align: "left" },
+                  paper_bgcolor: "white",
+                  plot_bgcolor: "#E5ECF6",
+                  polar: {
+                    bgcolor: "#E5ECF6",
+                    angularaxis: {
+                      gridcolor: "white",
+                      linecolor: "white",
+                      ticks: "",
+                    },
+                    radialaxis: {
+                      gridcolor: "white",
+                      linecolor: "white",
+                      ticks: "",
+                    },
+                  },
+                  ternary: {
+                    bgcolor: "#E5ECF6",
+                    aaxis: {
+                      gridcolor: "white",
+                      linecolor: "white",
+                      ticks: "",
+                    },
+                    baxis: {
+                      gridcolor: "white",
+                      linecolor: "white",
+                      ticks: "",
+                    },
+                    caxis: {
+                      gridcolor: "white",
+                      linecolor: "white",
+                      ticks: "",
+                    },
+                  },
+                  coloraxis: { colorbar: { outlinewidth: 0, ticks: "" } },
+                  colorscale: {
+                    sequential: [
+                      [0.0, "#0d0887"],
+                      [0.1111111111111111, "#46039f"],
+                      [0.2222222222222222, "#7201a8"],
+                      [0.3333333333333333, "#9c179e"],
+                      [0.4444444444444444, "#bd3786"],
+                      [0.5555555555555556, "#d8576b"],
+                      [0.6666666666666666, "#ed7953"],
+                      [0.7777777777777778, "#fb9f3a"],
+                      [0.8888888888888888, "#fdca26"],
+                      [1.0, "#f0f921"],
+                    ],
+                    sequentialminus: [
+                      [0.0, "#0d0887"],
+                      [0.1111111111111111, "#46039f"],
+                      [0.2222222222222222, "#7201a8"],
+                      [0.3333333333333333, "#9c179e"],
+                      [0.4444444444444444, "#bd3786"],
+                      [0.5555555555555556, "#d8576b"],
+                      [0.6666666666666666, "#ed7953"],
+                      [0.7777777777777778, "#fb9f3a"],
+                      [0.8888888888888888, "#fdca26"],
+                      [1.0, "#f0f921"],
+                    ],
+                    diverging: [
+                      [0, "#8e0152"],
+                      [0.1, "#c51b7d"],
+                      [0.2, "#de77ae"],
+                      [0.3, "#f1b6da"],
+                      [0.4, "#fde0ef"],
+                      [0.5, "#f7f7f7"],
+                      [0.6, "#e6f5d0"],
+                      [0.7, "#b8e186"],
+                      [0.8, "#7fbc41"],
+                      [0.9, "#4d9221"],
+                      [1, "#276419"],
+                    ],
+                  },
+                  xaxis: {
+                    gridcolor: "white",
+                    linecolor: "white",
+                    ticks: "",
+                    title: { standoff: 15 },
+                    zerolinecolor: "white",
+                    automargin: true,
+                    zerolinewidth: 2,
+                  },
+                  yaxis: {
+                    gridcolor: "white",
+                    linecolor: "white",
+                    ticks: "",
+                    title: { standoff: 15 },
+                    zerolinecolor: "white",
+                    automargin: true,
+                    zerolinewidth: 2,
+                  },
+                  scene: {
+                    xaxis: {
+                      backgroundcolor: "#E5ECF6",
+                      gridcolor: "white",
+                      linecolor: "white",
+                      showbackground: true,
+                      ticks: "",
+                      zerolinecolor: "white",
+                      gridwidth: 2,
+                    },
+                    yaxis: {
+                      backgroundcolor: "#E5ECF6",
+                      gridcolor: "white",
+                      linecolor: "white",
+                      showbackground: true,
+                      ticks: "",
+                      zerolinecolor: "white",
+                      gridwidth: 2,
+                    },
+                    zaxis: {
+                      backgroundcolor: "#E5ECF6",
+                      gridcolor: "white",
+                      linecolor: "white",
+                      showbackground: true,
+                      ticks: "",
+                      zerolinecolor: "white",
+                      gridwidth: 2,
+                    },
+                  },
+                  shapedefaults: { line: { color: "#2a3f5f" } },
+                  annotationdefaults: {
+                    arrowcolor: "#2a3f5f",
+                    arrowhead: 0,
+                    arrowwidth: 1,
+                  },
+                  geo: {
+                    bgcolor: "white",
+                    landcolor: "#E5ECF6",
+                    subunitcolor: "white",
+                    showland: true,
+                    showlakes: true,
+                    lakecolor: "white",
+                  },
+                  title: { x: 0.05 },
+                  mapbox: { style: "light" },
+                },
+              },
+              font: { color: "#DCDCDC" },
+              hovermode: "x",
+              paper_bgcolor: "#000000",
+            },
+            { responsive: true }
+          );
+        }
+      </script>
+    </div>
+            </div>
+        </div>
+
+        <div class="framework" style="position: absolute; top: 20px; left: calc(50% + 15px); height:97%">
+            <div class="frameworkTitle">
+                <div class="title">
+                    Linked Network
+                </div>
+            </div>
+
+            <div id="Network" class="frameworkBody">
+                <!-- <iframe id="iframe-id-graph" src="https://graphxr.kineviz.com/share/6395f21f0d93644565b056c7/5024_final/6398286a0d93644565b288e7" height="100%" width = "100%"></iframe> -->
+                <iframe id="iframe-id-graph" src="https://graphxr.kineviz.com/p/6397114c0d93644565b1680f/5024" height="100%" width = "100%"></iframe>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- <script>
+        let graphXRIframe = document.getElementById("iframe-id-graph");
+        graphXRIframe.addEventListener('mouseover', function () {
+        window.document.body.style.overflow = 'hidden';
+        graphXRIframe.style.overflow = 'auto';
+         });
+         graphXRIframe.addEventListener('mouseout', function () {
+         window.document.body.style.overflow = 'auto';
+         graphXRIframe.style.overflow = 'hidden';
+         })
+      </script> -->
+
+</body>
+
+
+</html>
